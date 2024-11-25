@@ -8,19 +8,27 @@ const botoes = document.querySelectorAll(".app__card-button");
 const musicaInput = document.querySelector("#alternar-musica");
 const musica = new Audio("/sons/luna-rise-part-one.mp3");
 musica.loop = true;
+let tempoDecorridoEmSegundos = 5;
+const botaoIniciarOuPausar = document.querySelector("#start-pause span");
+
+const startPauseButton = document.querySelector("#start-pause");
+const startPauseImg = document.querySelector("#start-pause img");
+let intervaloId = null;
+const audioStart = new Audio("/sons/play.wav");
+const audioEnd = new Audio("/sons/pause.mp3");
+const audioFim = new Audio("/sons/beep.mp3");
 
 musicaInput.addEventListener("change", () => {
-    if (musica.paused) {
-        musica.play();
-    } else {   
-        musica.pause();
-    }
+  if (musica.paused) {
+    musica.play();
+  } else {
+    musica.pause();
+  }
 });
 
 botaoFoco.addEventListener("click", () => {
   mudarContexto("foco");
   botaoFoco.classList.add("active");
-  
 });
 
 botaoCurto.addEventListener("click", () => {
@@ -34,9 +42,9 @@ botaoLongo.addEventListener("click", () => {
 });
 
 function mudarContexto(contexto) {
-    botoes.forEach(function(contexto){
-        contexto.classList.remove("active");
-    })
+  botoes.forEach(function (contexto) {
+    contexto.classList.remove("active");
+  });
   html.setAttribute("data-contexto", contexto);
   img.setAttribute("src", `/imagens/${contexto}.png`);
   switch (contexto) {
@@ -59,5 +67,33 @@ function mudarContexto(contexto) {
     default:
       break;
   }
+}
+const contagemRegressiva = () => {
+  if (tempoDecorridoEmSegundos <= 0) {
+    parar();
+    console.log("tempo acabou");
+    audioFim.play();
+    return;
+  }
+  tempoDecorridoEmSegundos -= 1;
+  console.log("Temporizador: " + tempoDecorridoEmSegundos);
+};
 
+startPauseButton.addEventListener("click", iniciaOuPausar);
+function iniciaOuPausar() {
+  if (intervaloId) {
+    audioEnd.play();
+    parar();
+    return;
+  }
+  audioStart.play();
+  intervaloId = setInterval(contagemRegressiva, 1000);
+  botaoIniciarOuPausar.textContent = "Pausar";
+  startPauseImg.setAttribute("src", "/imagens/pause.png");
+}
+function parar() {
+  clearInterval(intervaloId);
+  botaoIniciarOuPausar.textContent = "Começar";
+  startPauseImg.setAttribute("src", "/imagens/play_arrow.png");
+  intervaloId = null;
 }
