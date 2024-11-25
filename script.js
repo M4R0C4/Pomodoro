@@ -7,8 +7,9 @@ const texto = document.querySelector(".app__title");
 const botoes = document.querySelectorAll(".app__card-button");
 const musicaInput = document.querySelector("#alternar-musica");
 const musica = new Audio("/sons/luna-rise-part-one.mp3");
+const tempoNaTela = document.querySelector("#timer");
 musica.loop = true;
-let tempoDecorridoEmSegundos = 5;
+let tempoDecorridoEmSegundos = 1500;
 const botaoIniciarOuPausar = document.querySelector("#start-pause span");
 
 const startPauseButton = document.querySelector("#start-pause");
@@ -27,21 +28,25 @@ musicaInput.addEventListener("change", () => {
 });
 
 botaoFoco.addEventListener("click", () => {
+  tempoDecorridoEmSegundos = 1500;
   mudarContexto("foco");
   botaoFoco.classList.add("active");
 });
 
 botaoCurto.addEventListener("click", () => {
+  tempoDecorridoEmSegundos = 300;
   mudarContexto("descanso-curto");
   botaoCurto.classList.add("active");
 });
 
 botaoLongo.addEventListener("click", () => {
+  tempoDecorridoEmSegundos = 900;
   mudarContexto("descanso-longo");
   botaoLongo.classList.add("active");
 });
 
 function mudarContexto(contexto) {
+  mostrarTempo();
   botoes.forEach(function (contexto) {
     contexto.classList.remove("active");
   });
@@ -76,6 +81,7 @@ const contagemRegressiva = () => {
     return;
   }
   tempoDecorridoEmSegundos -= 1;
+  mostrarTempo()
   console.log("Temporizador: " + tempoDecorridoEmSegundos);
 };
 
@@ -97,3 +103,10 @@ function parar() {
   startPauseImg.setAttribute("src", "/imagens/play_arrow.png");
   intervaloId = null;
 }
+
+function mostrarTempo(){
+  const tempo = new Date(tempoDecorridoEmSegundos * 1000)
+  const tempoFormatado = tempo.toLocaleTimeString("pt-BR", {minute: "2-digit", second: "2-digit"})/*tempoDecorridoEmSegundos*/
+  tempoNaTela.innerHTML = `${tempoFormatado}`
+}
+mostrarTempo()
