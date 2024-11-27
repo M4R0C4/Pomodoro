@@ -497,6 +497,9 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 150%;
 }
 
+.app_button-edit img{
+  background-color: transparent !important;
+}
 .app_button-edit:disabled {
     color: #e6e6e6;
     opacity: 0.8;
