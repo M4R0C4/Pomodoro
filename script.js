@@ -28,7 +28,7 @@ musicaInput.addEventListener("change", () => {
 });
 
 botaoFoco.addEventListener("click", () => {
-  tempoDecorridoEmSegundos = 10;
+  tempoDecorridoEmSegundos = 1500;
   mudarContexto("foco");
   botaoFoco.classList.add("active");
 });
@@ -73,22 +73,28 @@ function mudarContexto(contexto) {
       break;
   }
 }
+
 const contagemRegressiva = () => {
   if (tempoDecorridoEmSegundos <= 0) {
-    console.log("tempo acabou");
     audioFim.play();
+    alert("tempo acabou!")
     const focoAtivo = html.getAttribute("data-contexto") == "foco";
     if (focoAtivo) {
       const evento = new CustomEvent("FocoFinalizado");
       document.dispatchEvent(evento);
     }
     parar();
+    tempoDecorridoEmSegundos = 1500; // reinicia o temporizador
+    mostrarTempo(); // atualiza o temporizador da tela
+    startPauseButton.textContent = "Começar"; // resetar o botão startPauseButton
+    startPauseImg.setAttribute("src", "/imagens/play_arrow.png"); // resetar o ícone do botão
+    intervaloId = null; // resetar o intervalo
     return;
   }
   tempoDecorridoEmSegundos -= 1;
   mostrarTempo()
-  console.log("Temporizador: " + tempoDecorridoEmSegundos);
 };
+
 
 startPauseButton.addEventListener("click", iniciaOuPausar);
 function iniciaOuPausar() {

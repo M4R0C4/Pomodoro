@@ -1,8 +1,10 @@
 const botaoAdicionarTarefa = document.querySelector(".app__button--add-task");
 const formularioAdicionarTarefa = document.querySelector(".app__form-add-task");
 const textoArea = document.querySelector(".app__form-textarea");
-const ListasDetarefas = JSON.parse(localStorage.getItem("tarefa")) || [];
+let ListasDetarefas = JSON.parse(localStorage.getItem("tarefa")) || [];
 const ulQueRecebeAsTarefas = document.querySelector(".app__section-task-list");
+const botaoRemoverTarefaConcluida = document.querySelector("#btn-remover-concluidas");
+
 
 const paragrafoDescricaoTarefa = document.querySelector(
   ".app__section-active-task-description"
@@ -31,18 +33,24 @@ function criarElementoTarefa(tarefa) {
   const botao = document.createElement("button");
   botao.classList.add("app_button-edit");
 
-  botao.onclick = () => {
-    //debugger
-    novaDescricao = prompt(
-      "Digite a nova descrição da tarefa",
-      tarefa.descricao
-    );
-    if (novaDescricao) {
-      paragrafo.textContent = novaDescricao;
-      tarefa.descricao = novaDescricao;
-      atualizarTarefas();
-    }
-  };
+  if (tarefa.completa){
+    li.classList.add("app__section-task-list-item-complete");
+    botao.setAttribute('disabled', true) 
+  } else {
+    botao.onclick = () => {
+      //debugger
+      novaDescricao = prompt(
+        "Digite a nova descrição da tarefa",
+        tarefa.descricao
+      );
+      if (novaDescricao) {
+        paragrafo.textContent = novaDescricao;
+        tarefa.descricao = novaDescricao;
+        atualizarTarefas();
+      }
+    };
+  }
+
 
   const imagemDoBotao = document.createElement("img");
   imagemDoBotao.setAttribute("src", "/imagens/edit.png");
@@ -94,5 +102,17 @@ document.addEventListener("FocoFinalizado", () => {
     liTarefaSelecionada.classList.remove("app__section-task-list-item-active");
     liTarefaSelecionada.classList.add("app__section-task-list-item-complete");
     liTarefaSelecionada.querySelector('button').setAttribute('disabled', true) 
+    tarefaSelecionada.completa = true;
+    atualizarTarefas()
   }
 })
+
+const removerTarefasConcluidas = (somenteCompletas) => {
+  const seletor = somenteCompletas ? '.app__section-task-list-item-complete' : '.app__section-task-list-item'
+  document.querySelectorAll(seletor).forEach((elemento) => {
+    elemento.remove()
+  })
+  ListasDetarefas = somenteCompletas? ListasDetarefas.filter(tarefa => tarefa.completa) : []
+  atualizarTarefas()
+}
+botaoRemoverTarefaConcluida.onclick = ()=> removerTarefasConcluidas(true)
