@@ -31,7 +31,7 @@ The structure was pre-assembled so that the lessons' tasks were focused on apply
 
 ### Screenshot
 
-![Desktop View]()
+![Desktop View](imagens/Fokus-Pomodoro-Desktop.png)
 
 ### Links
 
